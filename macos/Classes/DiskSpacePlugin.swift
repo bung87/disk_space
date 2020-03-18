@@ -9,26 +9,26 @@ public class DiskSpacePlugin: NSObject, FlutterPlugin {
   }
 
   private func totalDiskSpaceInBytes() -> Int64 {
-        guard let systemAttributes = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory() as String),
-            let space = (systemAttributes[FileAttributeKey.systemSize] as? NSNumber)?.int64Value else { return 0 }
-        return space
+    guard let systemAttributes = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory() as String),
+        let space = (systemAttributes[FileAttributeKey.systemSize] as? NSNumber)?.int64Value else { return 0 }
+    return space
   }
 
   private func freeDiskSpaceInBytes() -> Int64 {
-        if #available(macOS 10.13, *) {
-            if let space = try? URL(fileURLWithPath: NSHomeDirectory() as String).resourceValues(forKeys: [URLResourceKey.volumeAvailableCapacityForImportantUsageKey]).volumeAvailableCapacityForImportantUsage {
-                return space ?? 0
-            } else {
-                return 0
-            }
+    if #available(macOS 10.13, *) {
+        if let space = try? URL(fileURLWithPath: NSHomeDirectory() as String).resourceValues(forKeys: [URLResourceKey.volumeAvailableCapacityForImportantUsageKey]).volumeAvailableCapacityForImportantUsage {
+            return space ?? 0
         } else {
-            if let systemAttributes = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory() as String),
-            let freeSpace = (systemAttributes[FileAttributeKey.systemFreeSize] as? NSNumber)?.int64Value {
-                return freeSpace
-            } else {
-                return 0
-            }
+            return 0
         }
+    } else {
+        if let systemAttributes = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory() as String),
+        let freeSpace = (systemAttributes[FileAttributeKey.systemFreeSize] as? NSNumber)?.int64Value {
+            return freeSpace
+        } else {
+            return 0
+        }
+    }
   }
 
   private func usedDiskSpaceInBytes() -> Int64 {
@@ -49,6 +49,10 @@ public class DiskSpacePlugin: NSObject, FlutterPlugin {
         return Double(totalDiskSpaceInBytes() / (1024 * 1024))
       }
       result(totalDiskSpaceInMB)
+    case "getTotalDiskSpaceInBytes":
+        result(totalDiskSpaceInBytes())
+    case "getFreeDiskSpaceInBytes":
+        result(freeDiskSpaceInBytes())
     default:
       result(FlutterMethodNotImplemented)
     }

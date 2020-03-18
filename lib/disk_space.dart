@@ -20,4 +20,15 @@ class DiskSpace {
     final double totalDiskSpace = await _channel.invokeMethod('getTotalDiskSpace');
     return totalDiskSpace;
   }
+
+  static Future<int> get getTotalDiskSpaceInBytes async {
+    final int totalDiskSpace = await _channel.invokeMethod('getTotalDiskSpaceInBytes');
+    return totalDiskSpace;
+  }
+
+  static Future<int> get getFreeDiskSpaceInBytes async {
+    final int freeDiskSpace = await _channel.invokeMethod('getFreeDiskSpaceInBytes');
+    return freeDiskSpace;
+  }
+
 }

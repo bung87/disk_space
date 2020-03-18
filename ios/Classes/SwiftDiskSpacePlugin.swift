@@ -14,6 +14,10 @@ public class SwiftDiskSpacePlugin: NSObject, FlutterPlugin {
         result(UIDevice.current.freeDiskSpaceInMB)
     case "getTotalDiskSpace":
         result(UIDevice.current.totalDiskSpaceInMB)
+    case "getTotalDiskSpaceInBytes":
+        result(UIDevice.current.totalDiskSpaceInBytes)
+    case "getFreeDiskSpaceInBytes":
+        result(UIDevice.current.freeDiskSpaceInBytes)
     default:
         result(0.0)
     }

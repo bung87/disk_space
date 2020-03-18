@@ -17,7 +17,7 @@ class DiskSpacePlugin: MethodCallHandler {
     }
   }
 
-  private fun getFreeDiskSpace(): Double {
+  private fun getFreeDiskSpaceInBytes():Long {
     val stat = StatFs(Environment.getExternalStorageDirectory().path)
 
     var bytesAvailable: Long
@@ -26,10 +26,14 @@ class DiskSpacePlugin: MethodCallHandler {
       bytesAvailable = stat.blockSizeLong * stat.availableBlocksLong
     else
       bytesAvailable = stat.blockSize.toLong() * stat.availableBlocks.toLong()
-    return (bytesAvailable / (1024f * 1024f)).toDouble()
+    return bytesAvailable
   }
 
-  private fun getTotalDiskSpace(): Double {
+  private fun getFreeDiskSpace(): Double {
+    return (getFreeDiskSpaceInBytes() / (1024f * 1024f)).toDouble()
+  }
+  
+  private fun getTotalDiskSpaceInBytes():Long{
     val stat = StatFs(Environment.getExternalStorageDirectory().path)
 
     var bytesAvailable: Long
@@ -38,7 +42,12 @@ class DiskSpacePlugin: MethodCallHandler {
       bytesAvailable = stat.blockSizeLong * stat.blockCountLong
     else
       bytesAvailable = stat.blockSize.toLong() * stat.blockCount.toLong()
-    return (bytesAvailable / (1024f * 1024f)).toDouble()
+    return bytesAvailable
+  }
+
+  private fun getTotalDiskSpace(): Double {
+    
+    return (getTotalDiskSpaceInBytes() / (1024f * 1024f)).toDouble()
   }
 
 
@@ -46,6 +55,8 @@ class DiskSpacePlugin: MethodCallHandler {
     when(call.method) {
       "getFreeDiskSpace" -> result.success(getFreeDiskSpace())
       "getTotalDiskSpace" -> result.success(getTotalDiskSpace())
+      "getFreeDiskSpaceInBytes" -> result.success(getFreeDiskSpaceInBytes())
+      "getTotalDiskSpaceInBytes" -> result.success(getTotalDiskSpaceInBytes())
       else -> result.notImplemented()
     }
   }
